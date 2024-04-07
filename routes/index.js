@@ -9,7 +9,9 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/login/google', passport.authenticate('google', { scope: ['profile'] }));
-
+router.get('/login/facebook', passport.authenticate('facebook', {
+  scope: ['public_profile', 'email']
+}));
 router.get('/logout', (req, res, next) => {
   req.logout();
   res.redirect('/');

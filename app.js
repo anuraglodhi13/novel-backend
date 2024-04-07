@@ -5,7 +5,8 @@ const path = require('path');
 const express = require('express');
 const passport = require('passport');
 const { Strategy } = require('passport-google-oauth20');
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SESSION_SECRET } =  process.env;
+const FacebookStrategy = require('passport-facebook').Strategy;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SESSION_SECRET,FB_CLIENT_ID,FB_CLIENT_SECRET } =  process.env;
 const port = process.env.PORT || 5500;
 const app = express();
 const routes = require('./routes');
@@ -38,6 +39,23 @@ passport.use(new Strategy({
   return cb(null, profile);
 }));
 
+passport.use(new FacebookStrategy({
+  clientID: FB_CLIENT_ID,
+  clientSecret: FB_CLIENT_SECRET,
+  callbackURL: 'http://localhost:5500/auth/facebook/redirect'
+}, function (accessToken, refreshToken, profile, done) {
+  var myData = new User({userId:profile.id,name:profile.displayName,provider:profile.provider});
+  myData.save()
+    .then(item => {
+      console.log("item saved to database");
+    })
+    .catch(err => {
+      console.log("unable to save to database due to:"+err);
+    });
+  console.log("user profile is: ", profile)
+  return done(null, profile);
+}
+));
 passport.serializeUser((user, cb) => {
 cb(null, user);
 });
@@ -51,7 +69,10 @@ app.get("/auth/google/redirect", passport.authenticate("google", {
   failureRedirect: "/",
   successRedirect: "http://localhost:3000/welcome",
 }))
-
+app.get("/auth/facebook/redirect", passport.authenticate('facebook', {
+  failureRedirect: "/",
+  successRedirect: "http://localhost:3000/welcome",
+}))
 
 app.listen(port, function () {
     console.log("Express server listening on port "+port);
