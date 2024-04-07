@@ -12,7 +12,6 @@ const app = express();
 const routes = require('./routes');
 const connectToMongo = require('./dbConfig');
 const User = require('./model/userModel');
-app.set('view engine', 'ejs');
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
