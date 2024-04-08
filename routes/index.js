@@ -24,6 +24,8 @@ router.get("/logout", (req, res, next) => {
   res.redirect("/");
 });
 
+router.get("/auth/discord", passport.authenticate("discord"));
+
 router.get(
   "/return",
   passport.authenticate("google", { failureRedirect: "/" }),

@@ -7,6 +7,7 @@ const passport = require("passport");
 const { Strategy } = require("passport-google-oauth20");
 const FacebookStrategy = require("passport-facebook").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy; // Import TwitterStrategy
+const DiscordStrategy = require("passport-discord").Strategy;
 const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
@@ -15,6 +16,8 @@ const {
   FB_CLIENT_SECRET,
   TWITTER_CONSUMER_KEY,
   TWITTER_CONSUMER_SECRET,
+  DISCORD_CLIENT_ID,
+  DISCORD_CLIENT_SECRET,
 } = process.env;
 const port = process.env.PORT || 5500;
 const app = express();
@@ -118,6 +121,36 @@ passport.use(
   )
 );
 
+passport.use(
+  new DiscordStrategy(
+    {
+      clientID: DISCORD_CLIENT_ID,
+      clientSecret: DISCORD_CLIENT_SECRET,
+      callbackURL: "http://localhost:5500/auth/discord/redirect",
+      scope: ["identify", "email"], // Adjust scopes as needed
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      // Save user to database or perform other operations
+      var myData = new User({
+        userId: profile.id,
+        name: profile.username,
+        provider: "discord", // Set provider to 'discord'
+        // Additional profile data may vary based on scopes requested
+      });
+      myData
+        .save()
+        .then((item) => {
+          console.log("Item saved to database");
+        })
+        .catch((err) => {
+          console.log("Unable to save to database due to: " + err);
+        });
+      console.log("User profile is: ", profile);
+      return cb(null, profile);
+    }
+  )
+);
+
 passport.serializeUser((user, cb) => {
   cb(null, user);
 });
@@ -149,9 +182,15 @@ app.get(
   })
 );
 
+app.get(
+  "/auth/discord/redirect",
+  passport.authenticate("discord", {
+    failureRedirect: "/", // Redirect to home page on failure
+    successRedirect: "http://localhost:3000/welcome", // Redirect to welcome page on success
+  })
+);
+
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
   connectToMongo();
 });
-
-// app.listen(port);
