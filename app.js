@@ -71,7 +71,7 @@ passport.use(
     {
       clientID: FB_CLIENT_ID,
       clientSecret: FB_CLIENT_SECRET,
-      callbackURL: "http://localhost:5500/auth/facebook/redirect",
+      callbackURL: "https://novel-backend.onrender.com/auth/facebook/redirect",
     },
     function (accessToken, refreshToken, profile, done) {
       var myData = new User({
