@@ -126,7 +126,7 @@ passport.use(
     {
       clientID: DISCORD_CLIENT_ID,
       clientSecret: DISCORD_CLIENT_SECRET,
-      callbackURL: "http://localhost:5500/auth/discord/redirect",
+      callbackURL: "https://novel-backend.onrender.com/auth/discord/redirect",
       scope: ["identify", "email"], // Adjust scopes as needed
     },
     function (accessToken, refreshToken, profile, cb) {
