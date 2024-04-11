@@ -98,7 +98,7 @@ passport.use(
     {
       consumerKey: TWITTER_CONSUMER_KEY,
       consumerSecret: TWITTER_CONSUMER_SECRET,
-      callbackURL: "http://localhost:5500/auth/twitter/redirect",
+      callbackURL: "https://novel-backend.onrender.com/auth/twitter/redirect",
     },
     function (token, tokenSecret, profile, done) {
       // Save user to database or perform other operations
