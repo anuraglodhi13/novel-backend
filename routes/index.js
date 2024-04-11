@@ -24,7 +24,9 @@ router.get("/logout", (req, res, next) => {
   res.redirect("/");
 });
 
-router.get("/auth/discord", passport.authenticate("discord"));
+router.get("/login/discord", passport.authenticate("discord", {
+  scope: ["identify", "email"],
+}));
 
 router.get(
   "/return",
