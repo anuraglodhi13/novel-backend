@@ -44,7 +44,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5500/auth/google/redirect",
+      callbackURL: "https://novel-backend.onrender.com/auth/google/redirect",
     },
     (accessToken, refreshToken, profile, cb) => {
       var myData = new User({
