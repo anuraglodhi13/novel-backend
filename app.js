@@ -48,20 +48,17 @@ passport.use(
       callbackURL: "https://novel-backend.onrender.com/auth/google/redirect",
     },
     (accessToken, refreshToken, profile, cb) => {
-      var myData = new User({
-        userId: profile.id,
+      User.findOrCreate({ userId: profile.id }, {
         name: profile.displayName,
-        provider: profile.provider,
+        provider: profile.provider
+      }, (err, user) => {
+        if (err) {
+          console.error("Error finding or creating user:", err);
+        } else {
+          console.log("User found or created:", user);
+        }
       });
-      myData
-        .save()
-        .then((item) => {
-          console.log("item saved to database");
-        })
-        .catch((err) => {
-          console.log("unable to save to database due to:" + err);
-        });
-      console.log("user profile is: ", profile);
+      
       return cb(null, profile);
     }
   )
