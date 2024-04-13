@@ -15,7 +15,6 @@ const GoogleStrategy = require("./social_media_strategy/googleStrategy");
 const FacebookStrategy = require("./social_media_strategy/facebookStrategy");
 const TwitterStrategy = require("./social_media_strategy/xStrategy");
 const DiscordStrategy = require("./social_media_strategy/discordStrategy");
-
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(
@@ -43,7 +42,6 @@ passport.deserializeUser((obj, cb) => {
 });
 
 app.use("/", routes);
-
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
   connectToMongo();

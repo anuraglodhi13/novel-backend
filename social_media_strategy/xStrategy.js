@@ -9,7 +9,7 @@ const xStrategy = new TwitterStrategy(
     consumerSecret: TWITTER_CONSUMER_SECRET,
     callbackURL: "https://novel-backend.onrender.com/auth/twitter/redirect",
   },
-  function (token, tokenSecret, profile, done) {
+  function (token, tokenSecret, profile, cb) {
     User.findOrCreate(
       { userId: profile.id },
       {

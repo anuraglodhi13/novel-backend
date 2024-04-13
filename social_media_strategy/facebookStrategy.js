@@ -9,7 +9,7 @@ const facebookStrategy = new FacebookStrategy(
     clientSecret: FB_CLIENT_SECRET,
     callbackURL: "https://novel-backend.onrender.com/auth/facebook/redirect",
   },
-  function (accessToken, refreshToken, profile, done) {
+  function (accessToken, refreshToken, profile, cb) {
     User.findOrCreate(
       { userId: profile.id },
       {
