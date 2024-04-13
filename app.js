@@ -188,7 +188,7 @@ app.get(
     failureRedirect: "/", // Redirect to home page on failure
     successRedirect: "http://localhost:3000/dashboard", // Redirect to welcome page on success
   })
-);
+)
 
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
