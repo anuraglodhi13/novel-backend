@@ -51,13 +51,18 @@ passport.use(
       User.findOrCreate({ userId: profile.id }, {
         name: profile.displayName,
         provider: profile.provider
-      }, (err, user) => {
+      }, (err, user, created) => {
         if (err) {
           console.error("Error finding or creating user:", err);
         } else {
-          console.log("User found or created:", user);
+          if (created) {
+            console.log("New user created:", user);
+          } else {
+            console.log("User found:", user);
+          }
         }
       });
+      
       
       return cb(null, profile);
     }
