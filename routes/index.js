@@ -2,11 +2,7 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-
-router.get("/", (req, res, next) => {
-  const { user } = req;
-  res.render("home", { user });
-});
+const { REDIRECT_URL } = process.env;
 
 router.get(
   "/login/google",
@@ -18,22 +14,47 @@ router.get(
     scope: ["public_profile", "email"],
   })
 );
-router.get("/login/twitter", passport.authenticate("twitter")); // Twitter authentication route
+router.get("/login/twitter", passport.authenticate("twitter"));
+
 router.get("/logout", (req, res, next) => {
   req.logout();
   res.redirect("/");
 });
 
-router.get("/login/discord", passport.authenticate("discord", {
-  scope: ["identify", "email"],
-}));
-
 router.get(
-  "/return",
-  passport.authenticate("google", { failureRedirect: "/" }),
-  (req, res, next) => {
-    res.redirect("/");
-  }
+  "/login/discord",
+  passport.authenticate("discord", {
+    scope: ["identify", "email"],
+  })
 );
 
+router.get(
+  "/auth/google/redirect",
+  passport.authenticate("google", {
+    failureRedirect: "/",
+    successRedirect: REDIRECT_URL + "/dashboard",
+  })
+);
+router.get(
+  "/auth/facebook/redirect",
+  passport.authenticate("facebook", {
+    failureRedirect: "/",
+    successRedirect: REDIRECT_URL + "/dashboard",
+  })
+);
+router.get(
+  "/auth/twitter/redirect",
+  passport.authenticate("twitter", {
+    failureRedirect: "/",
+    successRedirect: REDIRECT_URL + "/dashboard",
+  })
+);
+
+router.get(
+  "/auth/discord/redirect",
+  passport.authenticate("discord", {
+    failureRedirect: "/", // Redirect to home page on failure
+    successRedirect: REDIRECT_URL + "/dashboard", // Redirect to welcome page on success
+  })
+);
 module.exports = router;

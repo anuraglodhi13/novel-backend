@@ -4,28 +4,17 @@ require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const passport = require("passport");
-const { Strategy } = require("passport-google-oauth20");
-const FacebookStrategy = require("passport-facebook").Strategy;
-const TwitterStrategy = require("passport-twitter").Strategy; // Import TwitterStrategy
-const DiscordStrategy = require("passport-discord").Strategy;
-const {
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  SESSION_SECRET,
-  FB_CLIENT_ID,
-  FB_CLIENT_SECRET,
-  TWITTER_CONSUMER_KEY,
-  TWITTER_CONSUMER_SECRET,
-  DISCORD_CLIENT_ID,
-  DISCORD_CLIENT_SECRET,
-  REDIRECT_URL
-} = process.env;
+
+const { SESSION_SECRET } = process.env;
+
 const port = process.env.PORT || 5500;
 const app = express();
 const routes = require("./routes");
 const connectToMongo = require("./dbConfig");
-const User = require("./model/userModel");
-// const OAuth2Strategy = require("passport-oauth2").Strategy;
+const GoogleStrategy = require("./social_media_strategy/googleStrategy");
+const FacebookStrategy = require("./social_media_strategy/facebookStrategy");
+const TwitterStrategy = require("./social_media_strategy/xStrategy");
+const DiscordStrategy = require("./social_media_strategy/discordStrategy");
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 
@@ -40,98 +29,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(
-  new Strategy(
-    {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://novel-backend.onrender.com/auth/google/redirect",
-    },
-    (accessToken, refreshToken, profile, cb) => {
-      User.findOrCreate({ userId: profile.id }, {
-        name: profile.displayName,
-        provider: profile.provider
-      }, (err, user) => {
-        console.log(err+user);
-        if (err) {
-          console.error("Error finding or creating user:", err);
-        }  
-        console.log("Profile created or found :"+profile);
-      });
-      return cb(null, profile);
-    }
-  )
-);
-
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: FB_CLIENT_ID,
-      clientSecret: FB_CLIENT_SECRET,
-      callbackURL: "https://novel-backend.onrender.com/auth/facebook/redirect",
-    },
-    function (accessToken, refreshToken, profile, done) {
-      User.findOrCreate({ userId: profile.id }, {
-        name: profile.displayName,
-        provider: profile.provider
-      }, (err, user) => {
-        console.log(err+user);
-        if (err) {
-          console.error("Error finding or creating user:", err);
-        }  
-        console.log("Profile created or found :"+profile);
-      });
-      return cb(null, profile);
-    }
-  )
-);
-
-passport.use(
-  new TwitterStrategy(
-    {
-      consumerKey: TWITTER_CONSUMER_KEY,
-      consumerSecret: TWITTER_CONSUMER_SECRET,
-      callbackURL: "https://novel-backend.onrender.com/auth/twitter/redirect",
-    },
-    function (token, tokenSecret, profile, done) {
-      User.findOrCreate({ userId: profile.id }, {
-        name: profile.displayName,
-        provider: profile.provider
-      }, (err, user) => {
-        console.log(err+user);
-        if (err) {
-          console.error("Error finding or creating user:", err);
-        }  
-        console.log("Profile created or found :"+profile);
-      });
-      return cb(null, profile);
-    }
-  )
-);
-
-passport.use(
-  new DiscordStrategy(
-    {
-      clientID: DISCORD_CLIENT_ID,
-      clientSecret: DISCORD_CLIENT_SECRET,
-      callbackURL: "https://novel-backend.onrender.com/auth/discord/redirect",
-      scope: ["identify", "email"], // Adjust scopes as needed
-    },
-    function (accessToken, refreshToken, profile, cb) {
-      User.findOrCreate({ userId: profile.id }, {
-        name: profile.displayName,
-        provider: profile.provider
-      }, (err, user) => {
-        console.log(err+user);
-        if (err) {
-          console.error("Error finding or creating user:", err);
-        }  
-        console.log("Profile created or found :"+profile);
-      });
-      return cb(null, profile);
-    }
-  )
-);
+passport.use("google", GoogleStrategy);
+passport.use("facebook", FacebookStrategy);
+passport.use("twitter", TwitterStrategy);
+passport.use("discord", DiscordStrategy);
 
 passport.serializeUser((user, cb) => {
   cb(null, user);
@@ -142,35 +43,6 @@ passport.deserializeUser((obj, cb) => {
 });
 
 app.use("/", routes);
-app.get(
-  "/auth/google/redirect",
-  passport.authenticate("google", {
-    failureRedirect: "/",
-    successRedirect: REDIRECT_URL+"/dashboard",
-  })
-);
-app.get(
-  "/auth/facebook/redirect",
-  passport.authenticate("facebook", {
-    failureRedirect: "/",
-    successRedirect: REDIRECT_URL+"/dashboard",
-  })
-);
-app.get(
-  "/auth/twitter/redirect",
-  passport.authenticate("twitter", {
-    failureRedirect: "/",
-    successRedirect: REDIRECT_URL+"/dashboard",
-  })
-);
-
-app.get(
-  "/auth/discord/redirect",
-  passport.authenticate("discord", {
-    failureRedirect: "/", // Redirect to home page on failure
-    successRedirect: REDIRECT_URL+"/dashboard", // Redirect to welcome page on success
-  })
-);
 
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
