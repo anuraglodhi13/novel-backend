@@ -51,19 +51,13 @@ passport.use(
       User.findOrCreate({ userId: profile.id }, {
         name: profile.displayName,
         provider: profile.provider
-      }, (err, user, created) => {
+      }, (err, user) => {
+        console.log(err+user);
         if (err) {
           console.error("Error finding or creating user:", err);
-        } else {
-          if (created) {
-            console.log("New user created:", user);
-          } else {
-            console.log("User found:", user);
-          }
-        }
+        }  
+        console.log("Profile created or found :"+profile);
       });
-      
-      
       return cb(null, profile);
     }
   )
@@ -77,21 +71,17 @@ passport.use(
       callbackURL: "https://novel-backend.onrender.com/auth/facebook/redirect",
     },
     function (accessToken, refreshToken, profile, done) {
-      var myData = new User({
-        userId: profile.id,
+      User.findOrCreate({ userId: profile.id }, {
         name: profile.displayName,
-        provider: profile.provider,
+        provider: profile.provider
+      }, (err, user) => {
+        console.log(err+user);
+        if (err) {
+          console.error("Error finding or creating user:", err);
+        }  
+        console.log("Profile created or found :"+profile);
       });
-      myData
-        .save()
-        .then((item) => {
-          console.log("item saved to database");
-        })
-        .catch((err) => {
-          console.log("unable to save to database due to:" + err);
-        });
-      console.log("user profile is: ", profile);
-      return done(null, profile);
+      return cb(null, profile);
     }
   )
 );
@@ -104,22 +94,17 @@ passport.use(
       callbackURL: "https://novel-backend.onrender.com/auth/twitter/redirect",
     },
     function (token, tokenSecret, profile, done) {
-      // Save user to database or perform other operations
-      var myData = new User({
-        userId: profile.id,
+      User.findOrCreate({ userId: profile.id }, {
         name: profile.displayName,
-        provider: profile.provider,
+        provider: profile.provider
+      }, (err, user) => {
+        console.log(err+user);
+        if (err) {
+          console.error("Error finding or creating user:", err);
+        }  
+        console.log("Profile created or found :"+profile);
       });
-      myData
-        .save()
-        .then((item) => {
-          console.log("Item saved to database");
-        })
-        .catch((err) => {
-          console.log("Unable to save to database due to: " + err);
-        });
-      console.log("User profile is: ", profile);
-      return done(null, profile);
+      return cb(null, profile);
     }
   )
 );
@@ -133,22 +118,16 @@ passport.use(
       scope: ["identify", "email"], // Adjust scopes as needed
     },
     function (accessToken, refreshToken, profile, cb) {
-      // Save user to database or perform other operations
-      var myData = new User({
-        userId: profile.id,
-        name: profile.username,
-        provider: "discord", // Set provider to 'discord'
-        // Additional profile data may vary based on scopes requested
+      User.findOrCreate({ userId: profile.id }, {
+        name: profile.displayName,
+        provider: profile.provider
+      }, (err, user) => {
+        console.log(err+user);
+        if (err) {
+          console.error("Error finding or creating user:", err);
+        }  
+        console.log("Profile created or found :"+profile);
       });
-      myData
-        .save()
-        .then((item) => {
-          console.log("Item saved to database");
-        })
-        .catch((err) => {
-          console.log("Unable to save to database due to: " + err);
-        });
-      console.log("User profile is: ", profile);
       return cb(null, profile);
     }
   )
