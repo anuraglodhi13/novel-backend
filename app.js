@@ -18,6 +18,7 @@ const {
   TWITTER_CONSUMER_SECRET,
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
+  REDIRECT_URL
 } = process.env;
 const port = process.env.PORT || 5500;
 const app = express();
@@ -164,21 +165,21 @@ app.get(
   "/auth/google/redirect",
   passport.authenticate("google", {
     failureRedirect: "/",
-    successRedirect: "http://localhost:3000/dashboard",
+    successRedirect: REDIRECT_URL+"/dashboard",
   })
 );
 app.get(
   "/auth/facebook/redirect",
   passport.authenticate("facebook", {
     failureRedirect: "/",
-    successRedirect: "http://localhost:3000/dashboard",
+    successRedirect: REDIRECT_URL+"/dashboard",
   })
 );
 app.get(
   "/auth/twitter/redirect",
   passport.authenticate("twitter", {
     failureRedirect: "/",
-    successRedirect: "http://localhost:3000/dashboard",
+    successRedirect: REDIRECT_URL+"/dashboard",
   })
 );
 
@@ -186,9 +187,9 @@ app.get(
   "/auth/discord/redirect",
   passport.authenticate("discord", {
     failureRedirect: "/", // Redirect to home page on failure
-    successRedirect: "http://localhost:3000/dashboard", // Redirect to welcome page on success
+    successRedirect: REDIRECT_URL+"/dashboard", // Redirect to welcome page on success
   })
-)
+);
 
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
