@@ -14,7 +14,7 @@ const discordStrategy = new DiscordStrategy(
     User.findOrCreate(
       { userId: profile.id },
       {
-        name: profile.displayName,
+        name: profile.username,
         provider: profile.provider,
       },
       (err, user) => {
