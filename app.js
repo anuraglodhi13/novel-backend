@@ -6,7 +6,7 @@ const express = require("express");
 const passport = require("passport");
 
 const { SESSION_SECRET } = process.env;
-
+const bodyParser = require("body-parser");
 const port = process.env.PORT || 5500;
 const app = express();
 const routes = require("./routes/index");
@@ -23,7 +23,8 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(
