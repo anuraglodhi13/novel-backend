@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 const mongoURI = process.env.MONGODB_URI;
+const prompt = require("./model/prompt");
 
 const connectToMongo = async () => {
   try {
@@ -12,4 +13,16 @@ const connectToMongo = async () => {
     process.exit();
   }
 };
-module.exports = connectToMongo;
+
+const getPrompt = async () => {
+  try {
+    const promptModel = mongoose.model("prompt");
+    const data = await promptModel.find({});
+    return data;
+  } catch (error) {
+    console.log(error);
+    process.exit();
+  }
+};
+
+module.exports = { connectToMongo, getPrompt };

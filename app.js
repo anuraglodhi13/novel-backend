@@ -9,12 +9,21 @@ const { SESSION_SECRET } = process.env;
 
 const port = process.env.PORT || 5500;
 const app = express();
-const routes = require("./routes");
-const connectToMongo = require("./dbConfig");
+const routes = require("./routes/index");
+const claudeRoute = require("./routes/claude");
+const dbFile = require("./dbConfig");
 const GoogleStrategy = require("./social_media_strategy/googleStrategy");
 const FacebookStrategy = require("./social_media_strategy/facebookStrategy");
 const TwitterStrategy = require("./social_media_strategy/xStrategy");
 const DiscordStrategy = require("./social_media_strategy/discordStrategy");
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  next();
+});
+
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(
@@ -42,7 +51,8 @@ passport.deserializeUser((obj, cb) => {
 });
 
 app.use("/", routes);
+app.use("/claude", claudeRoute);
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
-  connectToMongo();
+  dbFile.connectToMongo();
 });
