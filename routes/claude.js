@@ -7,7 +7,7 @@ const anthropic = new Anthropic({
   apiKey: CLAUDE_API_KEY,
 });
 
-claudeRoute.get("/generateNovel", async (req, res) => {
+claudeRoute.post("/generateNovel", async (req, res) => {
   // const dbPrompt = await dbFile.getPrompt();
   // const villainName = req.query.villainName;
   // const actorName = req.query.actorName;
