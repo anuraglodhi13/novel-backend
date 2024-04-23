@@ -2,7 +2,7 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
-const { REDIRECT_URL } = process.env;
+const { FRONT_END_DOMAIN } = process.env;
 
 router.get(
   "/login/google",
@@ -31,30 +31,42 @@ router.get(
 router.get(
   "/auth/google/redirect",
   passport.authenticate("google", {
-    failureRedirect: "/",
-    successRedirect: REDIRECT_URL + "/dashboard",
-  })
+    failureRedirect: FRONT_END_DOMAIN + "/login",
+  }),
+  function (req, res) {
+    const userId = req.user.id;
+    res.redirect(FRONT_END_DOMAIN + "/aistoryteller?userId=" + userId);
+  }
 );
 router.get(
   "/auth/facebook/redirect",
   passport.authenticate("facebook", {
-    failureRedirect: "/",
-    successRedirect: REDIRECT_URL + "/dashboard",
-  })
+    failureRedirect: FRONT_END_DOMAIN + "/login",
+  }),
+  function (req, res) {
+    const userId = req.user.id;
+    res.redirect(FRONT_END_DOMAIN + "/aistoryteller?userId=" + userId);
+  }
 );
 router.get(
   "/auth/twitter/redirect",
   passport.authenticate("twitter", {
-    failureRedirect: "/",
-    successRedirect: REDIRECT_URL + "/dashboard",
-  })
+    failureRedirect: FRONT_END_DOMAIN + "/login",
+  }),
+  function (req, res) {
+    const userId = req.user.id;
+    res.redirect(FRONT_END_DOMAIN + "/aistoryteller?userId=" + userId);
+  }
 );
 
 router.get(
   "/auth/discord/redirect",
   passport.authenticate("discord", {
-    failureRedirect: "/", // Redirect to home page on failure
-    successRedirect: REDIRECT_URL + "/dashboard", // Redirect to welcome page on success
-  })
+    failureRedirect: FRONT_END_DOMAIN + "/login",
+  }),
+  function (req, res) {
+    const userId = req.user.id;
+    res.redirect(FRONT_END_DOMAIN + "/aistoryteller?userId=" + userId);
+  }
 );
 module.exports = router;

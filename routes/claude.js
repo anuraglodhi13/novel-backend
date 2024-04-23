@@ -8,6 +8,7 @@ const anthropic = new Anthropic({
 });
 
 claudeRoute.post("/generateNovel", async (req, res) => {
+  console.log("<--- generateNovel request came ---->");
   // const dbPrompt = await dbFile.getPrompt();
   // const villainName = req.query.villainName;
   // const actorName = req.query.actorName;
