@@ -3,6 +3,7 @@ const express = require("express");
 const passport = require("passport");
 const router = express.Router();
 const { FRONT_END_DOMAIN } = process.env;
+const User = require("../model/userModel");
 
 router.get(
   "/login/google",
@@ -69,4 +70,19 @@ router.get(
     res.redirect(FRONT_END_DOMAIN + "/aistoryteller?userId=" + userId);
   }
 );
+
+router.get("/user/:userId", async (req, res) => {
+  const customUserId = req.params.userId;
+  try {
+    const user = await User.findOne({ userId: customUserId });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error finding user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;
