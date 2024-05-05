@@ -71,5 +71,6 @@ app.use("/stripe", stripeRoute);
 app.use("/claude", claudeRoute);
 app.listen(port, function () {
   console.log("Express server listening on port " + port);
+  console.log("Load balancer running on port 80");
   dbFile.connectToMongo();
 });

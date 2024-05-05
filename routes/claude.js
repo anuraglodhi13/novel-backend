@@ -36,5 +36,9 @@ claudeRoute.post("/generateNovel", async (req, res) => {
       .json({ error: "An error occurred while generating the message" });
   }
 });
-
+function createLoadBalancer(routes) {
+  return loadBalancer({
+    routes,
+  });
+}
 module.exports = claudeRoute;
